@@ -65,14 +65,16 @@ const CountdownDisplay = ({ day1, day2 }: { day1: string; day2: string }) => (
 );
 
 const TemplateContent = ({ templateRef, day1, day2, content, type }: { templateRef: React.RefObject<HTMLDivElement | null>; day1: string; day2: string; content: string; type: string }) => (
-  <div ref={templateRef} className="flex flex-col items-center gap-2 w-full h-[40vh] bg-[#FDF9D1]/20 shadow">
+  <div ref={templateRef} className="flex flex-col items-center gap-2 w-full min-h-[40vh] bg-[#FDF9D1]/20 shadow pb-5">
     <div className='flex justify-between w-full'>
       <Image src={lamp} alt='lamp' width={50} />
       <div className='self-end flex flex-col items-center gap-5'>
-        <div className='bg-[#D49E46] w-2/4 rounded-b flex justify-center items-center'>
-          <p className='text-center text-sm font-bold text-white '>{type}</p>
+        <div className='bg-[#D49E46] min-w-2/4 rounded-b px-2 flex justify-center items-center'>
+          <p className='text-center text-xs lg:text-sm font-bold text-white '>{type}</p>
         </div>
         <Ramadan />
+        {/* <div>
+          <p className='text-[#BF8B3F] text-2xl md:text-xl lg:text-2xl font-black'>Ramadan 2025</p>        </div> */}
       </div>
       <Image className='rotate-360' src={lamp} alt='lamp' width={50} />
     </div>
@@ -92,7 +94,7 @@ export default function RamadanGraphicsTemplate() {
   const saveAsImage = async () => {
     if (!templateRef.current) return;
 
-    const canvas = await html2canvas(templateRef.current, { scale: 4 }); // Adjust the scale factor as needed
+    const canvas = await html2canvas(templateRef.current, { scale: 10 });
     const image = canvas.toDataURL('image/png');
     const link = document.createElement('a');
     link.href = image;
