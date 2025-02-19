@@ -68,7 +68,7 @@ const TemplateContent = ({ templateRef, day1, day2, content, type }: { templateR
   <div ref={templateRef} className="flex flex-col items-center gap-2 w-full h-[40vh] bg-[#FDF9D1]/20 shadow">
     <div className='flex justify-between w-full'>
       <Image src={lamp} alt='lamp' width={50} />
-      <div className='self-end flex flex-col items-center gap-2'>
+      <div className='self-end flex flex-col items-center gap-5'>
         <div className='bg-[#D49E46] w-2/4 rounded-b flex justify-center items-center'>
           <p className='text-center text-sm font-bold text-white '>{type}</p>
         </div>
@@ -83,16 +83,16 @@ const TemplateContent = ({ templateRef, day1, day2, content, type }: { templateR
   </div>
 );
 
-const RamadanGraphicsTemplate = ({ initialDay = '', initialContent = '' }) => {
-  const [day, setDay] = useState<string>(initialDay);
+export default function RamadanGraphicsTemplate() {
+  const [day, setDay] = useState<string>('');
   const [type, setType] = useState<string>('');
-  const [content, setContent] = useState(initialContent);
+  const [content, setContent] = useState('');
   const templateRef = useRef<HTMLDivElement>(null);
 
   const saveAsImage = async () => {
     if (!templateRef.current) return;
 
-    const canvas = await html2canvas(templateRef.current, { scale: 10 });
+    const canvas = await html2canvas(templateRef.current, { scale: 4 }); // Adjust the scale factor as needed
     const image = canvas.toDataURL('image/png');
     const link = document.createElement('a');
     link.href = image;
@@ -149,4 +149,3 @@ const RamadanGraphicsTemplate = ({ initialDay = '', initialContent = '' }) => {
   );
 };
 
-export default RamadanGraphicsTemplate;
