@@ -1,101 +1,152 @@
-import Image from "next/image";
+'use client';
+import React, { useState, useRef } from 'react';
+import html2canvas from 'html2canvas';
+import Image from 'next/image';
+import lamp from '@/assets/svgs/lamp.svg';
+import { ChevronDown } from 'lucide-react';
+import { Ramadan } from '@/assets/svgs/Ramadan';
 
-export default function Home() {
+interface CustomSelectProps<T extends React.ReactNode> {
+  value: T | '';
+  onChange: (value: T) => void;
+  options: T[];
+  label?: string;
+}
+
+const CustomSelect = <T extends React.ReactNode>({ value, onChange, options, label }: CustomSelectProps<T>) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleOpen = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const selectOption = (option: T) => {
+    onChange(option);
+    setIsOpen(false);
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="relative">
+      <button
+        type="button"
+        className="w-full px-3 py-2 border rounded-lg text-black flex justify-between items-center"
+        onClick={toggleOpen}
+      >
+        {String(value) || `Select ${label}`}
+        <ChevronDown className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      {isOpen && (
+        <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-[200px] overflow-auto">
+          {options.map((option, index) => (
+            <button
+              key={index}
+              type="button"
+              className="block w-full px-4 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 text-black"
+              onClick={() => selectOption(option)}
+            >
+              {option}
+            </button>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      )}
     </div>
   );
-}
+};
+
+const CountdownDisplay = ({ day1, day2 }: { day1: string; day2: string }) => (
+  <div className='flex justify-center gap-2 w-2/4 mt-2 h-[12vh]'>
+    <div className='bg-[#D49E46] w-2/4 rounded flex justify-center items-center'>
+      <p className=' text-center text-4xl font-bold font-mono text-white'>{day1 || "0"}</p>
+    </div>
+    <div className='bg-[#D49E46] w-2/4 rounded flex justify-center items-center'>
+      <p className='text-center text-4xl font-bold font-mono text-white '>{day2 || "0"}</p>
+    </div>
+  </div>
+);
+
+const TemplateContent = ({ templateRef, day1, day2, content, type }: { templateRef: React.RefObject<HTMLDivElement | null>; day1: string; day2: string; content: string; type: string }) => (
+  <div ref={templateRef} className="flex flex-col items-center gap-2 w-full h-[40vh] bg-[#FDF9D1]/20 shadow">
+    <div className='flex justify-between w-full'>
+      <Image src={lamp} alt='lamp' width={50} />
+      <div className='self-end flex flex-col items-center gap-2'>
+        <div className='bg-[#D49E46] w-2/4 rounded-b flex justify-center items-center'>
+          <p className='text-center text-sm font-bold text-white '>{type}</p>
+        </div>
+        <Ramadan />
+      </div>
+      <Image className='rotate-360' src={lamp} alt='lamp' width={50} />
+    </div>
+    <CountdownDisplay day1={day1} day2={day2} />
+    <div className='mt-3 px-5 text-center'>
+      <p className='text-[#D49E46] font-light'>{content}</p>
+    </div>
+  </div>
+);
+
+const RamadanGraphicsTemplate = ({ initialDay = '', initialContent = '' }) => {
+  const [day, setDay] = useState<string>(initialDay);
+  const [type, setType] = useState<string>('');
+  const [content, setContent] = useState(initialContent);
+  const templateRef = useRef<HTMLDivElement>(null);
+
+  const saveAsImage = async () => {
+    if (!templateRef.current) return;
+
+    const canvas = await html2canvas(templateRef.current, { scale: 10 });
+    const image = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.href = image;
+    link.download = `ramadan_graphic_${new Date().toISOString().slice(0, 10)}.png`;
+    link.click();
+  };
+
+  const typeSelections = ['Countdown', 'Daily Reminder'];
+  const days: string[] = Array.from({ length: 30 }, (_, i) => String(i + 1).padStart(2, '0'));
+
+  const splitday = day.split('');
+  const day1 = splitday[0];
+  const day2 = splitday[1];
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2">Day:</label>
+          <CustomSelect<string>
+            value={day}
+            onChange={setDay}
+            options={days}
+            label='Day'
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2">Type:</label>
+          <CustomSelect<string>
+            value={type}
+            onChange={setType}
+            options={typeSelections}
+            label='Type'
+          />
+        </div>
+        <div className="mb-6">
+          <label className="block text-gray-700 mb-2">Content:</label>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Enter content"
+            className="w-full px-3 py-2 border rounded-lg h-32 text-black"
+          />
+        </div>
+        <TemplateContent templateRef={templateRef} day1={day1} day2={day2} content={content} type={type} />
+        <button
+          onClick={saveAsImage}
+          className="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+        >
+          Download Image
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default RamadanGraphicsTemplate;
