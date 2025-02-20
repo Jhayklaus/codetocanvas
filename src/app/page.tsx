@@ -69,7 +69,7 @@ const TemplateContent = ({ templateRef, day1, day2, content, type }: { templateR
     <div className='flex justify-between w-full'>
       <Image src={lamp} alt='lamp' width={50} />
       <div className='self-end flex flex-col items-center gap-5'>
-        <div className='bg-[#D49E46] min-w-2/4 rounded-b px-2 flex justify-center items-center'>
+        <div className='bg-[#D49E46] min-w-2/4 rounded-b px-2 py-1 flex justify-center items-center'>
           <p className='text-center text-xs lg:text-sm font-bold text-white '>{type}</p>
         </div>
         <Ramadan />
