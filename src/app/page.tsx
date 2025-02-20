@@ -4,7 +4,7 @@ import html2canvas from 'html2canvas';
 import Image from 'next/image';
 import lamp from '@/assets/svgs/lamp.svg';
 import { ChevronDown } from 'lucide-react';
-import { Ramadan } from '@/assets/svgs/Ramadan';
+import { RamadanWithAH } from '@/assets/svgs/Ramadan';
 
 interface CustomSelectProps<T extends React.ReactNode> {
   value: T | '';
@@ -68,11 +68,11 @@ const TemplateContent = ({ templateRef, day1, day2, content, type }: { templateR
   <div ref={templateRef} className="flex flex-col items-center gap-2 w-full min-h-[40vh] bg-[#FDF9D1]/20 shadow pb-5">
     <div className='flex justify-between w-full'>
       <Image src={lamp} alt='lamp' width={50} />
-      <div className='self-end flex flex-col items-center gap-5'>
-        <div className='bg-[#D49E46] min-w-2/4 rounded-b px-2 py-1 flex justify-center items-center'>
-          <p className='text-center text-xs lg:text-sm font-bold text-white '>{type}</p>
+      <div className='flex flex-col items-center gap-5'>
+        <div className='bg-[#D49E46] min-w-2/4 min-h-[3vh] rounded-b flex justify-center items-center'>
+          <p className='text-center text-xs lg:text-sm font-bold text-white px-2'>{type}</p>
         </div>
-        <Ramadan />
+        <RamadanWithAH />
         {/* <div>
           <p className='text-[#BF8B3F] text-2xl md:text-xl lg:text-2xl font-black'>Ramadan 2025</p>        </div> */}
       </div>
@@ -91,16 +91,47 @@ export default function RamadanGraphicsTemplate() {
   const [content, setContent] = useState('');
   const templateRef = useRef<HTMLDivElement>(null);
 
+
   const saveAsImage = async () => {
     if (!templateRef.current) return;
+  
 
+    const isIOS = navigator.userAgent.match(/iPhone|iPad|iPod/i)
     const canvas = await html2canvas(templateRef.current, { scale: 10 });
-    const image = canvas.toDataURL('image/png');
-    const link = document.createElement('a');
-    link.href = image;
-    link.download = `ramadan_graphic_${new Date().toISOString().slice(0, 10)}.png`;
-    link.click();
+  
+    if (isIOS) {
+
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+  
+        const file = new File([blob], `ramadan_${type}_DAY${day}.png`, { type: 'image/png' });
+  
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'Ramadan Image',
+              text: content,
+            });
+            return; 
+          } catch (err) {
+            console.error('Sharing failed', err);
+          }
+        }
+  
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+      }, 'image/png');
+  
+    } else {
+      const image = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = image;
+      link.download = `ramadan_${type}_DAY${day}.png`;
+      link.click();
+    }
   };
+  
 
   const typeSelections = ['Countdown', 'Daily Reminder'];
   const days: string[] = Array.from({ length: 30 }, (_, i) => String(i + 1).padStart(2, '0'));
