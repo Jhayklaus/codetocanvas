@@ -64,17 +64,12 @@ const CountdownDisplay = ({ day1, day2 }: { day1: string; day2: string }) => (
   </div>
 );
 
-const TemplateContent = ({ templateRef, day1, day2, content, type }: { templateRef: React.RefObject<HTMLDivElement | null>; day1: string; day2: string; content: string; type: string }) => (
-  <div ref={templateRef} className="flex flex-col items-center gap-2 w-full min-h-[40vh] bg-[#FDF9D1]/20 shadow pb-5">
+const TemplateContent = ({ templateRef, day1, day2, content }: { templateRef: React.RefObject<HTMLDivElement | null>; day1: string; day2: string; content: string; type: string }) => (
+  <div ref={templateRef} className="flex flex-col items-center w-full min-h-[40vh] bg-[#FDF9D1]/20 shadow pb-5">
     <div className='flex justify-between w-full'>
       <Image src={lamp} alt='lamp' width={50} />
-      <div className='flex flex-col items-center gap-5'>
-        <div className='bg-[#D49E46] min-w-2/4 min-h-[3vh] rounded-b flex justify-center items-center'>
-          <p className='text-center text-xs lg:text-sm font-bold text-white px-2'>{type}</p>
-        </div>
+      <div className='flex flex-col items-center'>
         <RamadanWithAH />
-        {/* <div>
-          <p className='text-[#BF8B3F] text-2xl md:text-xl lg:text-2xl font-black'>Ramadan 2025</p>        </div> */}
       </div>
       <Image className='rotate-360' src={lamp} alt='lamp' width={50} />
     </div>
